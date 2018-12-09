@@ -1,29 +1,28 @@
 package photo
 
 type Photo struct {
-	counter int
-	URL     string `json:"url"`
-	UserID  int    `json:"userID"`
+	ID     int    `json:"ID,omitempty"`
+	URL    string `json:"url,omitempty"`
+	UserID int    `json:"userID,omitempty"`
 }
 
 func NewPhoto() *Photo {
 	return &Photo{
-		counter: 1,
+		ID: 1,
 	}
 }
 
 func (pc *PhotoCollection) AddPhoto(photo *Photo) {
-	pc.Photos[pc.counter] = photo
-	pc.counter = pc.counter + 1
+	pc.Photos = append(pc.Photos, photo)
 }
 
 type PhotoCollection struct {
 	counter int
-	Photos  map[int]*Photo
+	Photos  []*Photo
 }
 
 func NewPhotoCollection() *PhotoCollection {
 	return &PhotoCollection{
-		Photos: map[int]*Photo{},
+		Photos: []*Photo{},
 	}
 }

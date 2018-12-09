@@ -1,7 +1,7 @@
 package user
 
 type User struct {
-	counter  int
+	ID       int    `json:"ID,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password,omitempty"`
 	Name     string `json:"name,omitempty"`
@@ -9,22 +9,21 @@ type User struct {
 
 func NewUser() *User {
 	return &User{
-		counter: 1,
+		ID: 1,
 	}
 }
 
 func (uc *UserCollection) AddUser(user *User) {
-	uc.Users[uc.counter] = user
-	uc.counter = uc.counter + 1
+	uc.Users = append(uc.Users, user)
 }
 
 type UserCollection struct {
 	counter int
-	Users   map[int]*User
+	Users   []*User
 }
 
 func NewUserCollection() *UserCollection {
 	return &UserCollection{
-		Users: map[int]*User{},
+		Users: []*User{},
 	}
 }

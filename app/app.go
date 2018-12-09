@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"shade/photo"
@@ -38,29 +39,51 @@ func GetUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, userCollection.Users[userID])
+	for _, v := range userCollection.Users {
+		if userID == v.ID {
+			c.JSON(http.StatusOK, v)
+			return
+		}
+	}
+	c.JSON(http.StatusBadRequest, errors.New("ID does not exist"))
+	return
 }
 
 func CreatePhoto(c *gin.Context) {
-	//need to check if user exists
 	photo := photo.NewPhoto()
-
 	if err := c.Bind(&photo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// for _, v := range userCollection.Users {
-	// 	if photo.UserID == _ {
-	// 		errors.New("Area calculation failed, radius is less than zero")
-	// 	}
-	// }
-	fmt.Println(photo.UserID)
-	photoCollection.AddPhoto(photo)
-	c.JSON(http.StatusOK, photoCollection)
+	for _, v := range userCollection.Users {
+		if photo.UserID == v.ID {
+			photoCollection.AddPhoto(photo)
+			c.JSON(http.StatusOK, photoCollection)
+			return
+		}
+	}
+	c.JSON(http.StatusBadRequest, errors.New("ID does not exist"))
+	return
 }
 
 func GetAllPhoto(c *gin.Context) {
 	c.JSON(http.StatusOK, photoCollection)
+}
+
+func GetPhoto(c *gin.Context) {
+	photoID, err := strconv.Atoi(c.Param("photoID"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	for _, v := range photoCollection.Photos {
+		if photoID == v.ID {
+			c.JSON(http.StatusOK, v)
+			return
+		}
+	}
+	c.JSON(http.StatusBadRequest, errors.New("ID does not exist"))
+	return
 }
 
 func Start() {
@@ -71,5 +94,6 @@ func Start() {
 
 	r.POST("/photo", CreatePhoto)
 	r.GET("/photo", GetAllPhoto)
+	r.GET("photo/:photoID", GetPhoto)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
