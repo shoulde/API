@@ -14,3 +14,13 @@ type User struct {
 func (u *User) TableName() string {
 	return "user"
 }
+
+type Photo struct {
+	gorm.Model
+	URL    string `json:"url,omitempty"`
+	UserID int    `json:"userID,omitempty"`
+}
+
+func (p *Photo) TableName() string {
+	return "photo"
+}

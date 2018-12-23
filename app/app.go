@@ -6,8 +6,6 @@ import (
 	"shade/config"
 	"shade/controllers"
 	"shade/models"
-	"shade/photo"
-	"shade/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -15,9 +13,7 @@ import (
 )
 
 var (
-	userCollection  = user.NewUserCollection()
-	photoCollection = photo.NewPhotoCollection()
-	err             error
+	err error
 )
 
 func CreatePhoto(c *gin.Context) {
@@ -74,7 +70,7 @@ func Start() {
 	r.GET("/user", controllers.GetUsers)
 	r.GET("/user/:id", controllers.GetUser)
 
-	r.POST("/photo", CreatePhoto)
+	r.POST("/photo", controllers.AddPhoto)
 	// r.GET("/photo", GetAllPhoto)
 	// r.GET("photo/:photoID", GetPhoto)
 
@@ -85,7 +81,7 @@ func Start() {
 
 	defer config.DB.Close()
 
-	config.DB.AutoMigrate(&models.User{})
+	config.DB.AutoMigrate(&models.User{}, &models.Photo{})
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
