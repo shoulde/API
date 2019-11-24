@@ -6,9 +6,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string `json:"email,omitempty"`
-	Email    string `json:"password,omitempty"`
-	Password string `json:"name,omitempty"`
+	Name     string `gorm:"size:255"`
+	Email    string `gorm:"type:varchar(100);unique_index"`
+	Password string
+	Photos   []Photo
 }
 
 func (u *User) TableName() string {
@@ -17,8 +18,8 @@ func (u *User) TableName() string {
 
 type Photo struct {
 	gorm.Model
-	URL    string `json:"url,omitempty"`
-	UserID int    `json:"userID,omitempty"`
+	URL    string
+	UserID int `gorm:"index"`
 }
 
 func (p *Photo) TableName() string {

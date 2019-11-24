@@ -69,8 +69,10 @@ func Start() {
 	r.POST("/user", controllers.AddUser)
 	r.GET("/user", controllers.GetUsers)
 	r.GET("/user/:id", controllers.GetUser)
+	r.GET("/user/:id/photo", controllers.GetUserPhoto)
 
 	r.POST("/photo", controllers.AddPhoto)
+	r.GET("/test", controllers.Test)
 	// r.GET("/photo", GetAllPhoto)
 	// r.GET("photo/:photoID", GetPhoto)
 
@@ -80,7 +82,6 @@ func Start() {
 	}
 
 	defer config.DB.Close()
-
 	config.DB.AutoMigrate(&models.User{}, &models.Photo{})
 
 	r.Run() // listen and serve on 0.0.0.0:8080
